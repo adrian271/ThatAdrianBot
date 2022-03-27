@@ -1,5 +1,16 @@
 let tmi = require("tmi.js");
+let express = require("express");
+let path = require("path");
+let cors = require("cors");
+let bodyParser = require("body-parser");
+
 let channel = "thatadrianbot";
+
+let app = express();
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
 let config = {
   options: { debug: true },
@@ -19,6 +30,21 @@ client.on("connected", (address, port) => {
   });
 });
 
+/* routing */
+app.get("/", (req, res) => {
+  console.log(`Request: ${req.method} ${req.url}`);
+  res.sendFile(path.join(__dirname, "./index.html"));
+});
+
+// listening for web server traffic
+
+let port = process.env.PORT || 3333;
+app.listen(port, () => {
+  console.clear();
+  console.log(`Server is running on port ${port}`);
+});
+
+/* what we're listening for */
 let slugzyCount = 0;
 let cp80xdCount = 0;
 

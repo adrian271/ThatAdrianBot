@@ -11,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tmi.js": "^1.8.5"
+    "body-parser": "1.19.2",
+    "cors": "2.8.5",
+    "express": "4.17.3",
+    "path": "0.12.7",
+    "tmi.js": "1.8.5"
   }
 }
