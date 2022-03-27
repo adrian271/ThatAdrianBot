@@ -12,6 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
+let http = require("http").Server(app);
+let io = require("socket.io")(http);
+
 let config = {
   options: { debug: true },
   identity: {
@@ -36,10 +39,21 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "./index.html"));
 });
 
+/* Socket on */
+
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+  setTimeout(() => {
+    io.emit("socket push", "Hi Twitch");
+  }, 3000);
+});
+
 // listening for web server traffic
 
 let port = process.env.PORT || 3333;
-app.listen(port, () => {
+http.listen(port, () => {
   console.clear();
   console.log(`Server is running on port ${port}`);
 });
@@ -82,6 +96,17 @@ client.on("chat", (channel, user, message, self) => {
     client.say(
       channel,
       `👇 https://twitch.tv/${soPerson.toLowerCase()} Shout out to ${soPerson}! Give them a follow, I'm serious!`
+    );
+  }
+
+  if (message.indexOf("!kir13ear") === 0) {
+    io.emit("kir13ear");
+  }
+
+  if (message.indexOf("!momstar") === 0) {
+    client.say(
+      channel,
+      `Momstar is here! check her out at https://twitch.tv/momstar4`
     );
   }
 });
